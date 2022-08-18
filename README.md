@@ -12,6 +12,6 @@ PySimpleGUI, bcrypt, pycryptodome
 + Click Manage Passwd to set the password the first time you run it
 + After entering the correct password, you can save the key
 ## Screenshots
-[Window]!(https://github.com/blue-spirits/Easyfcrypt/raw/master/screenshots/window.png)
-[Decrypt]!(https://github.com/blue-spirits/Easyfcrypt/raw/master/screenshots/Dencrypt.png)
-[Ｍanager]!(https://github.com/blue-spirits/Easyfcrypt/raw/master/screenshots/manager.png)
+![Ｗindow](https://github.com/blue-spirits/Easyfcrypt/raw/master/screenshots/window.png)
+![Dencrypt](https://github.com/blue-spirits/Easyfcrypt/raw/master/screenshots/Dencrypt.png)
+![Manager](https://github.com/blue-spirits/Easyfcrypt/raw/master/screenshots/manager.png)
