@@ -1,7 +1,7 @@
 from encrypt import Encrypt,Dencrypt,File_object
 import PySimpleGUI as sg
 from secrets import token_bytes
-import bcrypt, base64
+import bcrypt, base64, copy
 from passwd_manager import Passwd_manager,key_padding,check_key
 my_passwd = Passwd_manager('passwd.json','passwd.key')
 my_passwd.read_json()
@@ -43,7 +43,7 @@ def dispaly_manager(manager,manager_layout):
                 manager.write_json()
                 manager_window.find_element('-keyList-').update(my_passwd.den_list)
 def dencrypt_list(key_list,passwd):
-    l = key_list
+    l = copy.deepcopy(key_list)
     for i in range(0,len(l)):
         en_key = bytes.fromhex(l[i][1])
         den_key = Dencrypt(en_key,key_padding(passwd.encode()))
