@@ -1,4 +1,6 @@
 import json
+
+
 class Passwd_manager():
     def __init__(self,json_file,passwd_file):
         self.json_file = json_file
