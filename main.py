@@ -1,7 +1,8 @@
 from encrypt import Encrypt,Dencrypt,File_object
 import PySimpleGUI as sg
 from secrets import token_bytes
-import bcrypt, base64, copy
+import bcrypt, base64, copy, gc
+from os.path import isfile
 from passwd_manager import Passwd_manager,key_padding,check_key
 my_passwd = Passwd_manager('passwd.json','passwd.key')
 my_passwd.read_json()
@@ -48,7 +49,7 @@ def dencrypt_list(key_list,passwd):
         en_key = bytes.fromhex(l[i][1])
         den_key = Dencrypt(en_key,key_padding(passwd.encode()))
         den_key.ECB()
-        den_key = den_key.den_text
+        den_key = den_key.text
         l[i][1] = den_key.decode()
     return l
 window = sg.Window('Easyfcrypt', layout,size=(510,400),grab_anywhere=True )
@@ -117,8 +118,7 @@ while True:
         key = values['-passwdInput-'].encode()
         key = key_padding(key)
         f = File_object(file)
-        f_bytes = f.read_bytes()
-        if f_bytes == None:
+        if isfile(file) == False:
             sg.popup_error('File does not exist')
         elif len(key)>32:
             sg.popup_error('Keys are too long')
@@ -127,19 +127,22 @@ while True:
         elif values[1] ==True:
             a = Encrypt(f.read_bytes(), key)
             a.pkcs7()
-            en_text = a.ECB()
+            a.ECB()
             try:
-                f.write_bytes(en_text)
+                f.write_bytes(a.text)
             except PermissionError:
                 sg.popup_error('Not enough permissions')
             else:
                 if values[2] == True and my_passwd.verified == True:
                     en_passwd = Encrypt(key, key_padding(my_passwd.den_passwd.encode()))
-                    en_passwd = en_passwd.ECB()
+                    en_passwd.ECB()
+                    en_passwd = en_passwd.text
                     my_passwd.update_json([file, en_passwd.hex()])
                     my_passwd.den_list.insert(0,[file, key.decode()])
                     my_passwd.write_json()
-                sg.popup_ok(file + ' Encrypt successfully')
+                    del a
+                    gc.collect()
+                    sg.popup_ok(file + ' Encrypt successfully')
         elif values['-dencrypt-'] ==True:
             b = Dencrypt(f.read_bytes(), key)
             try:
@@ -147,18 +150,23 @@ while True:
             except ValueError:
                 sg.popup_error('The number of file bytes is not a multiple of 16',title='Wrong file')
             else:
-                den_text = b.pkcs7()
-                if den_text == None:
+                b.pkcs7()
+                if b.text == None:
+                    del b
+                    gc.collect()
                     sg.popup_ok('Wrong key')
                 else:
                     try:
-                        f.write_bytes(den_text)
+                        f.write_bytes(b.text)
                     except PermissionError:
+                        del b
+                        gc.collect()
                         sg.popup_error('Not enough permissions')
                     else:
                         my_passwd.remove_key(file)
                         my_passwd.write_json()
+                        del b
+                        gc.collect()
                         sg.popup_ok(file + ' Dencrypt successfully')
-
 
 window.close()

@@ -12,8 +12,7 @@ class Encrypt():
 
     def ECB(self):
         aes = AES.new(self.key, AES.MODE_ECB)
-        en_text = aes.encrypt(self.text)
-        return en_text
+        self.text = aes.encrypt(self.text)
 
     def pkcs7(self):
         padding_num = 16 - self.rest_num
@@ -39,24 +38,20 @@ class File_object():
 
 
 class Dencrypt():
-    def __init__(self, en_text, key):
-        self.en_text = en_text
+    def __init__(self, text, key):
+        self.text = text
         self.key = key
-        self.den_text = b''
 
     def ECB(self):
         aes = AES.new(self.key, AES.MODE_ECB)
-        self.den_text = aes.decrypt(self.en_text)
-        return self.den_text
+        self.text = aes.decrypt(self.text)
     def pkcs7(self):
-        padding_num = self.den_text[-1]
+        padding_num = self.text[-1]
         if type(padding_num) == int and padding_num <= 16:
-            end_list = self.den_text[0 - padding_num:]
+            end_list = self.text[0 - padding_num:]
             for i in end_list:
                 if i != padding_num:
-                    self.den_text = None
-                    return None
+                    self.text = None
         else:
-            return None
-        self.den_text = self.den_text[0:0 - padding_num]
-        return self.den_text
+            self.text = None
+        return self.text[0:0 - padding_num]
