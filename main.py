@@ -140,9 +140,9 @@ while True:
                     my_passwd.update_json([file, en_passwd.hex()])
                     my_passwd.den_list.insert(0,[file, key.decode()])
                     my_passwd.write_json()
-                    del a
-                    gc.collect()
-                    sg.popup_ok(file + ' Encrypt successfully')
+                del a
+                gc.collect()
+                sg.popup_ok(file + ' Encrypt successfully')
         elif values['-dencrypt-'] ==True:
             b = Dencrypt(f.read_bytes(), key)
             try:
