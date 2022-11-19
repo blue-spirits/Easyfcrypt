@@ -54,4 +54,5 @@ class Dencrypt():
                     self.text = None
         else:
             self.text = None
+            return self.text
         return self.text[0:0 - padding_num]
